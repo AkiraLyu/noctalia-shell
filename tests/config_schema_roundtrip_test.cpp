@@ -258,6 +258,8 @@ namespace {
     c.shell.fontFamily = "Inter";
     c.shell.lang = "en_US";
     c.shell.timeFormat = "{:%H:%M:%S}";
+    c.shell.niriOverviewTypeToLaunchEnabled = true;
+    c.shell.niriOverviewTypeToLaunchCloseAfterLaunch = true;
     c.shell.passwordMaskStyle = PasswordMaskStyle::RandomIcons;
     c.shell.clipboardHistoryMaxEntries = 80;
     c.shell.clipboardAutoPaste = ClipboardAutoPasteMode::CtrlV;

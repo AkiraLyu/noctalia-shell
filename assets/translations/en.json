@@ -1808,6 +1808,10 @@
           "label": "Type to Launch",
           "description": "Open the launcher when typing in niri overview; uses a tiny keyboard-focus surface while overview is open"
         },
+        "niri-overview-type-to-launch-close-after-launch": {
+          "label": "Close Overview After Launch",
+          "description": "Close niri overview after successfully launching an item opened through Type to Launch"
+        },
         "polkit-agent": {
           "label": "Polkit Agent",
           "description": "Enable the built-in authentication agent"

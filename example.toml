@@ -13,6 +13,7 @@ date_format           = "%A, %x"    # default shell UI date format
 offline_mode          = false        # block all outgoing HTTP when true
 telemetry_enabled     = false        # send an anonymous startup ping
 niri_overview_type_to_launch_enabled = false # opt in to type-to-launch from niri overview
+niri_overview_type_to_launch_close_after_launch = false # close niri overview after launching from type-to-launch
 polkit_agent          = false
 password_style        = "default"    # default | random
 settings_show_advanced = false       # show advanced settings by default in Settings

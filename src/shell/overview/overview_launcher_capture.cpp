@@ -10,7 +10,6 @@
 #include "wayland/layer_surface.h"
 #include "wayland/wayland_connection.h"
 
-#include <json.hpp>
 #include <string>
 
 namespace {
@@ -186,7 +185,7 @@ bool OverviewLauncherCapture::sendNiriAction(const char* actionName) const {
   if (m_platform == nullptr || actionName == nullptr || actionName[0] == '\0') {
     return false;
   }
-  return m_platform->niriRuntime().requestAction(nlohmann::json{{actionName, nlohmann::json::object()}});
+  return m_platform->niriRuntime().requestActionByName(actionName);
 }
 
 bool OverviewLauncherCapture::handleNiriOverviewKey(const KeyboardEvent& event) const {
