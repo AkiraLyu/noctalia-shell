@@ -838,6 +838,7 @@ namespace settings {
         add(std::move(minimal));
       }
       add(segmentedSpec("display", "id", workspaceDisplay));
+      add(boolSpec("enable_scrollwheel", true));
       {
         auto labelsOnlyWhenOccupied = boolSpec("labels_only_when_occupied", false);
         labelsOnlyWhenOccupied.descriptionKey =
@@ -859,6 +860,43 @@ namespace settings {
         pillScale.descriptionKey = "settings.widgets.settings.pill_scale.workspaces-description";
         pillScale.visibleWhen = pillStyleOnly;
         add(std::move(pillScale));
+      }
+      {
+        auto showApplications = boolSpec("show_applications", false);
+        add(std::move(showApplications));
+      }
+      const WidgetSettingVisibility groupedApplicationsSettings{
+          WidgetSettingVisibilityCondition{"show_applications", {"true"}}
+      };
+      {
+        auto hover = boolSpec("show_applications_hover", false);
+        hover.visibleWhen = groupedApplicationsSettings;
+        add(std::move(hover));
+      }
+      {
+        auto showBadge = boolSpec("show_badge", true);
+        showBadge.visibleWhen = groupedApplicationsSettings;
+        add(std::move(showBadge));
+      }
+      {
+        auto colorizeIcons = boolSpec("colorize_icons", false);
+        colorizeIcons.visibleWhen = groupedApplicationsSettings;
+        add(std::move(colorizeIcons));
+      }
+      {
+        auto unfocusedOpacity = doubleSpec("unfocused_icons_opacity", 1.0, 0.0, 1.0, 0.01);
+        unfocusedOpacity.visibleWhen = groupedApplicationsSettings;
+        add(std::move(unfocusedOpacity));
+      }
+      {
+        auto borderOpacity = doubleSpec("grouped_border_opacity", 1.0, 0.0, 1.0, 0.01);
+        borderOpacity.visibleWhen = groupedApplicationsSettings;
+        add(std::move(borderOpacity));
+      }
+      {
+        auto iconScale = doubleSpec("icon_scale", 0.8, 0.5, 1.0, 0.01);
+        iconScale.visibleWhen = groupedApplicationsSettings;
+        add(std::move(iconScale));
       }
       {
         auto focusedColor = colorSpec("focused_color", "primary");

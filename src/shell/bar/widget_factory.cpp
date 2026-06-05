@@ -578,13 +578,25 @@ std::unique_ptr<Widget> WidgetFactory::create(
     if (wc != nullptr && wc->hasSetting("max_label_chars")) {
       maxLabelChars = static_cast<std::size_t>(wc->getInt("max_label_chars", 1));
     }
-    const bool labelsOnlyWhenOccupied = wc != nullptr ? wc->getBool("labels_only_when_occupied", false) : false;
+    const bool showApplications = wc != nullptr ? wc->getBool("show_applications", false) : false;
+    const bool labelsOnlyWhenOccupied =
+        wc != nullptr ? wc->getBool("labels_only_when_occupied", showApplications) : false;
     const bool hideWhenEmpty = wc != nullptr ? wc->getBool("hide_when_empty", false) : false;
     const double pillScale = wc != nullptr ? wc->getDouble("pill_scale", 1.0) : 1.0;
     const bool minimal = wc != nullptr ? wc->getBool("minimal", false) : false;
+    const bool showApplicationsHover = wc != nullptr ? wc->getBool("show_applications_hover", false) : false;
+    const bool colorizeIcons = wc != nullptr ? wc->getBool("colorize_icons", false) : false;
+    const float unfocusedIconsOpacity =
+        static_cast<float>(wc != nullptr ? wc->getDouble("unfocused_icons_opacity", 1.0) : 1.0);
+    const float groupedBorderOpacity =
+        static_cast<float>(wc != nullptr ? wc->getDouble("grouped_border_opacity", 1.0) : 1.0);
+    const bool enableScrollWheel = wc != nullptr ? wc->getBool("enable_scrollwheel", true) : true;
+    const float iconScale = static_cast<float>(wc != nullptr ? wc->getDouble("icon_scale", 0.8) : 0.8);
+    const bool showBadge = wc != nullptr ? wc->getBool("show_badge", true) : true;
     auto widget = std::make_unique<WorkspacesWidget>(
         m_platform, output, displayMode, focusedColor, occupiedColor, emptyColor, maxLabelChars, labelsOnlyWhenOccupied,
-        hideWhenEmpty, pillScale, minimal
+        hideWhenEmpty, pillScale, minimal, showApplications, showApplicationsHover, colorizeIcons,
+        unfocusedIconsOpacity, groupedBorderOpacity, enableScrollWheel, iconScale, showBadge
     );
     widget->setContentScale(contentScale);
     return widget;

@@ -1339,6 +1339,10 @@
           "label": "Display Mode",
           "description": "Render the battery as a graphical shape or a Tabler glyph"
         },
+        "enable_scrollwheel": {
+          "label": "Scroll to Switch",
+          "description": "Switch between workspaces using the mouse wheel."
+        },
         "focused_color": {
           "label": "Focused Color",
           "description": "Color role used for the focused workspace; fixed hex colors are also supported"
@@ -1507,6 +1511,34 @@
           "label": "Pill Scale",
           "description": "Adjust the scale of workspace pills",
           "workspaces-description": "Adjust the scale of workspace pills"
+        },
+        "show_applications": {
+          "label": "Show Applications",
+          "description": "Display application icons inside each workspace capsule."
+        },
+        "show_applications_hover": {
+          "label": "Show Applications on Hover",
+          "description": "Display application icons only while the workspace widget is hovered."
+        },
+        "show_badge": {
+          "label": "Show Workspace Badge",
+          "description": "Show the small workspace number badge in application mode."
+        },
+        "colorize_icons": {
+          "label": "Colorize Icons",
+          "description": "Tint unfocused application icons in workspace application mode."
+        },
+        "unfocused_icons_opacity": {
+          "label": "Unfocused Icon Opacity",
+          "description": "Opacity of icons for inactive windows in workspace application mode."
+        },
+        "grouped_border_opacity": {
+          "label": "Grouped Border Opacity",
+          "description": "Opacity of the outline around each workspace application capsule."
+        },
+        "icon_scale": {
+          "label": "Icon Scale",
+          "description": "Scale of application icons inside workspace capsules."
         },
         "hot_reload": {
           "label": "Hot Reload",
