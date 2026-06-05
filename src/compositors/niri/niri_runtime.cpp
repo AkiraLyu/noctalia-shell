@@ -88,6 +88,13 @@ namespace compositors::niri {
     return requestOk(payload, acceptNoResponse);
   }
 
+  bool NiriRuntime::requestActionByName(std::string_view actionName, bool acceptNoResponse) const {
+    if (actionName.empty()) {
+      return false;
+    }
+    return requestAction(nlohmann::json{{std::string(actionName), nlohmann::json::object()}}, acceptNoResponse);
+  }
+
   NiriRuntime::IpcReply NiriRuntime::request(std::string_view request) const {
     ensureResolved();
     if (m_socketPath.empty() || request.empty()) {

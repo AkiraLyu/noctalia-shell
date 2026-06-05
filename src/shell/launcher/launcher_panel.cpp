@@ -412,6 +412,10 @@ void LauncherPanel::addProvider(std::unique_ptr<LauncherProvider> provider) {
   m_providers.push_back(std::move(provider));
 }
 
+void LauncherPanel::setActivationCallback(std::function<void()> callback) {
+  m_activationCallback = std::move(callback);
+}
+
 void LauncherPanel::create() {
   m_launcherRowHeight = 0.0f;
   const float scale = contentScale();
@@ -1077,6 +1081,7 @@ void LauncherPanel::openAppActionsMenu(std::size_t index, float anchorX, float a
       if (provider->trackUsage()) {
         m_usageTracker.record(provider->id(), result.id);
       }
+      notifyActivationSucceeded();
       PanelManager::instance().closePanel(false);
       return;
     }
@@ -1138,8 +1143,15 @@ void LauncherPanel::activateSelected() {
     if (provider->trackUsage()) {
       m_usageTracker.record(provider->id(), result.id);
     }
+    notifyActivationSucceeded();
     PanelManager::instance().closePanel(false);
     return;
+  }
+}
+
+void LauncherPanel::notifyActivationSucceeded() const {
+  if (m_activationCallback) {
+    m_activationCallback();
   }
 }
 

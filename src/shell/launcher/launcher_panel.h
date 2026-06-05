@@ -7,6 +7,7 @@
 #include "ui/signal.h"
 
 #include <cstddef>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -32,6 +33,7 @@ public:
   ~LauncherPanel() override;
 
   void addProvider(std::unique_ptr<LauncherProvider> provider);
+  void setActivationCallback(std::function<void()> callback);
 
   void create() override;
   void onOpen(std::string_view context) override;
@@ -55,6 +57,7 @@ private:
   void refreshResults();
   void activateAt(std::size_t index);
   void activateSelected();
+  void notifyActivationSucceeded() const;
   bool handleKeyEvent(std::uint32_t sym, std::uint32_t modifiers);
   void applyEmptyState();
   [[nodiscard]] std::vector<LauncherResult> providerOverviewResults(std::string_view text) const;
@@ -93,5 +96,6 @@ private:
   ConfigService* m_config = nullptr;
   AsyncTextureCache* m_asyncTextures = nullptr;
   std::unique_ptr<ContextMenuPopup> m_actionsMenu;
+  std::function<void()> m_activationCallback;
   Signal<>::ScopedConnection m_appIconColorizeConn;
 };

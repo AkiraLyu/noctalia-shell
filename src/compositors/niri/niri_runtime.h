@@ -28,6 +28,7 @@ namespace compositors::niri {
     [[nodiscard]] std::optional<nlohmann::json> requestJson(std::string_view request) const;
     [[nodiscard]] bool requestOk(std::string_view request, bool acceptNoResponse = false) const;
     [[nodiscard]] bool requestAction(const nlohmann::json& action, bool acceptNoResponse = false) const;
+    [[nodiscard]] bool requestActionByName(std::string_view actionName, bool acceptNoResponse = false) const;
     void refresh();
     void cleanup();
 

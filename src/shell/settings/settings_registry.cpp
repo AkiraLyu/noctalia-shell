@@ -1372,6 +1372,15 @@ namespace settings {
             {"shell", "niri_overview_type_to_launch_enabled"}, ToggleSetting{cfg.shell.niriOverviewTypeToLaunchEnabled},
             "niri overview type launch launcher search keyboard focus"
         ));
+        auto closeAfterLaunch = makeEntry(
+            "niri", "overview", tr("settings.schema.shell.niri-overview-type-to-launch-close-after-launch.label"),
+            tr("settings.schema.shell.niri-overview-type-to-launch-close-after-launch.description"),
+            {"shell", "niri_overview_type_to_launch_close_after_launch"},
+            ToggleSetting{cfg.shell.niriOverviewTypeToLaunchCloseAfterLaunch},
+            "niri overview type launch close after launcher activate"
+        );
+        closeAfterLaunch.visibleWhen = SettingVisibility{{"shell", "niri_overview_type_to_launch_enabled"}, {"true"}};
+        entries.push_back(std::move(closeAfterLaunch));
       }
       if (env.niriBackdropSupported) {
         entries.push_back(makeEntry(

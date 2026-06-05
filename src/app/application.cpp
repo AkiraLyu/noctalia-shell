@@ -1,6 +1,7 @@
 #include "application.h"
 
 #include "app/poll_source.h"
+#include "compositors/niri/niri_runtime.h"
 #include "config/config_types.h"
 #include "core/build_info.h"
 #include "core/deferred_call.h"
@@ -64,6 +65,7 @@ namespace {
 
   constexpr Logger kLog("app");
   constexpr bool kLockKeysEnabled = true;
+  constexpr std::string_view kNiriActionCloseOverview = "CloseOverview";
   constexpr std::string_view kPolkitAuthorityBusName = "org.freedesktop.PolicyKit1";
 
   float elapsedSince(std::chrono::steady_clock::time_point start) {
@@ -1061,6 +1063,24 @@ void Application::startTrayService() {
   }
 }
 
+void Application::maybeCloseNiriOverviewAfterTypeToLaunch() {
+  if (!m_launcherOpenedFromNiriTypeToLaunch) {
+    return;
+  }
+
+  m_launcherOpenedFromNiriTypeToLaunch = false;
+
+  const ShellConfig& shell = m_configService.config().shell;
+  if (!shell.niriOverviewTypeToLaunchEnabled || !shell.niriOverviewTypeToLaunchCloseAfterLaunch) {
+    return;
+  }
+  if (!m_compositorPlatform.hasOverviewState() || !m_compositorPlatform.isOverviewOpen()) {
+    return;
+  }
+
+  (void)m_compositorPlatform.niriRuntime().requestActionByName(kNiriActionCloseOverview);
+}
+
 void Application::initUi() {
   auto shouldRefreshControlCenter = [this]() { return m_panelManager.isOpenPanel("control-center"); };
 
@@ -1269,6 +1289,7 @@ void Application::initUi() {
   );
   {
     auto launcherPanel = std::make_unique<LauncherPanel>(&m_configService, &m_asyncTextureCache);
+    launcherPanel->setActivationCallback([this]() { maybeCloseNiriOverviewAfterTypeToLaunch(); });
     launcherPanel->addProvider(std::make_unique<AppProvider>(&m_configService, &m_compositorPlatform));
     launcherPanel->addProvider(std::make_unique<WallpaperProvider>(&m_configService, &m_wayland));
     launcherPanel->addProvider(std::make_unique<WindowProvider>(&m_compositorPlatform));
@@ -1284,6 +1305,7 @@ void Application::initUi() {
         if (m_panelManager.isOpenPanel("launcher")) {
           return;
         }
+        m_launcherOpenedFromNiriTypeToLaunch = true;
         m_panelManager.openPanel(
             "launcher", PanelOpenRequest{.output = output, .context = initialQuery, .sourceBarName = sourceBarName}
         );
@@ -1299,6 +1321,7 @@ void Application::initUi() {
     }
   });
   m_panelManager.setPanelClosedCallback([this]() {
+    m_launcherOpenedFromNiriTypeToLaunch = false;
     m_overviewLauncherCapture.sync();
     m_bar.reevaluateAutoHide();
   });
