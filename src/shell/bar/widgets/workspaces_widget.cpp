@@ -106,7 +106,9 @@ bool WorkspacesWidget::shouldShowWorkspaceLabel(const Workspace& workspace, std:
   return true;
 }
 
-bool WorkspacesWidget::shouldShowBarCapsule() const { return false; }
+bool WorkspacesWidget::shouldShowBarCapsule() const {
+  return !m_showApplications && Widget::shouldShowBarCapsule();
+}
 
 void WorkspacesWidget::create() {
   auto container = std::make_unique<InputArea>();
