@@ -773,10 +773,6 @@ void WorkspacesWidget::rebuildGroupedApplications(Renderer& renderer) {
                                            : crossExtent;
     const float groupRadius = resolvedBarCapsuleRadius(groupWidth, groupHeight);
     const float outlineStroke = std::max(1.0f, std::round(Style::borderWidth * scale));
-    const float outlineInset = std::max(1.0f, std::round(outlineStroke));
-    const float outlineWidth = std::max(1.0f, groupWidth - outlineInset * 2.0f);
-    const float outlineHeight = std::max(1.0f, groupHeight - outlineInset * 2.0f);
-    const float outlineRadius = std::max(0.0f, groupRadius - outlineInset);
 
     auto groupArea = std::make_unique<InputArea>();
     groupArea->setFrameSize(groupWidth, groupHeight);
@@ -801,12 +797,11 @@ void WorkspacesWidget::rebuildGroupedApplications(Renderer& renderer) {
 
     auto groupOutline = ui::box({
         .fill = clearColorSpec(),
-        .radius = outlineRadius,
-        .width = outlineWidth,
-        .height = outlineHeight,
+        .radius = groupRadius,
+        .width = groupWidth,
+        .height = groupHeight,
         .visible = false,
     });
-    groupOutline->setPosition(outlineInset, outlineInset);
     Box* groupOutlinePtr = static_cast<Box*>(groupArea->addChild(std::move(groupOutline)));
     const auto applyGroupBorder = [this, groupOutlinePtr, outlineStroke, active = groupModel.workspace.active](bool hovered) {
       if (groupOutlinePtr == nullptr) {
