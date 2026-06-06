@@ -922,23 +922,25 @@ void WorkspacesWidget::rebuildGroupedApplications(Renderer& renderer) {
       const std::string label = groupModel.label.empty() ? groupedWorkspaceLabel(groupModel.workspace, groupIndex)
                                                          : groupModel.label;
       const FontWeight fontWeight = labelFontWeight();
-      float badgeFontSize = std::round(Style::fontSizeMini * scale);
+      float badgeFontSize = std::round(Style::fontSizeMini * 0.82f * scale);
       const TextMetrics metrics = renderer.measureText(label, badgeFontSize, fontWeight);
       const float textWidth = std::max(metrics.right - metrics.left, metrics.inkRight - metrics.inkLeft);
       const float textHeight = std::max(metrics.bottom - metrics.top, metrics.inkBottom - metrics.inkTop);
-      const float minBadge = std::round(std::max(10.0f * scale, badgeFontSize) * 2.0f);
-      const float badgeWidth = std::round(std::max(minBadge, textWidth + Style::spaceXs * scale * 0.5f));
-      const float badgeHeight = std::round(std::max(minBadge, textHeight + Style::spaceXs * scale));
+      const float minBadge = std::round(std::max(12.0f * scale, badgeFontSize + Style::spaceXs * scale));
+      const float badgeWidth = std::round(std::max(minBadge, textWidth + Style::spaceXs * scale));
+      const float badgeHeight = std::round(std::max(minBadge, textHeight + Style::spaceXs * scale * 0.75f));
       auto badge = ui::box({
           .fill = workspaceBadgeFillColor(groupModel.workspace),
           .radius = std::min(Style::scaledRadiusLg(scale), badgeHeight * 0.5f),
           .width = badgeWidth,
           .height = badgeHeight,
       });
-      badge->setPosition(
-          std::round(-Style::fontSizeCaption * 0.55f * scale),
-          std::round(-Style::fontSizeCaption * 0.25f * scale)
-      );
+      const float crossInset = std::max(0.0f, std::round((slotCross - crossExtent) * 0.5f));
+      const float maxLeftOverhang = m_isVertical ? crossInset : groupX;
+      const float maxTopOverhang = m_isVertical ? groupY : crossInset;
+      const float badgeX = -std::min(std::round(badgeWidth * 0.38f), maxLeftOverhang);
+      const float badgeY = -std::min(std::round(badgeHeight * 0.28f), maxTopOverhang);
+      badge->setPosition(badgeX, badgeY);
       badge->setZIndex(1);
       auto badgeText = ui::label({
           .text = label,
