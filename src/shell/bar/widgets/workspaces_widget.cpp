@@ -58,6 +58,14 @@ namespace {
     return static_cast<float>(px);
   }
 
+  [[nodiscard]] float workspaceCapsuleCrossExtent(float slotCross, float barScale, float fallbackScale) {
+    if (slotCross <= 1.0f) {
+      return std::round(kWorkspacePillDefaultHeight * fallbackScale);
+    }
+    const float inset = std::round(std::min(Style::spaceXs * barScale, slotCross * 0.12f));
+    return std::max(1.0f, slotCross - 2.0f * inset);
+  }
+
   [[nodiscard]] std::uintptr_t syntheticWindowKey(
       const WorkspaceWindowAssignment& assignment, std::size_t index
   ) {
@@ -77,12 +85,13 @@ WorkspacesWidget::WorkspacesWidget(
     ColorSpec occupiedColor, ColorSpec emptyColor, std::size_t maxLabelChars, bool labelsOnlyWhenOccupied,
     bool hideWhenEmpty, float pillScale, bool minimal, bool showApplications, bool showApplicationsHover,
     bool colorizeIcons, float unfocusedIconsOpacity, float groupedBorderOpacity, bool enableScrollWheel,
-    float iconScale, bool showBadge
+    float iconScale, bool showBadge, float barScale
 )
     : m_platform(platform), m_output(output), m_displayMode(displayMode), m_maxLabelChars(maxLabelChars),
       m_labelsOnlyWhenOccupied(labelsOnlyWhenOccupied), m_hideWhenEmpty(hideWhenEmpty), m_pillScale(pillScale),
-      m_minimal(minimal), m_showApplications(showApplications), m_showApplicationsHover(showApplicationsHover),
-      m_colorizeIcons(colorizeIcons), m_unfocusedIconsOpacity(std::clamp(unfocusedIconsOpacity, 0.0f, 1.0f)),
+      m_barScale(std::max(0.1f, barScale)), m_minimal(minimal), m_showApplications(showApplications),
+      m_showApplicationsHover(showApplicationsHover), m_colorizeIcons(colorizeIcons),
+      m_unfocusedIconsOpacity(std::clamp(unfocusedIconsOpacity, 0.0f, 1.0f)),
       m_groupedBorderOpacity(std::clamp(groupedBorderOpacity, 0.0f, 1.0f)), m_enableScrollWheel(enableScrollWheel),
       m_iconScale(std::clamp(iconScale, 0.1f, 1.0f)), m_showBadge(showBadge), m_focusedColor(std::move(focusedColor)),
       m_occupiedColor(std::move(occupiedColor)), m_emptyColor(std::move(emptyColor)) {
@@ -542,7 +551,9 @@ void WorkspacesWidget::rebuildPills(Renderer& renderer) {
   const auto& workspaces = m_cachedState;
   const float gap = kWorkspaceGap * m_contentScale;
   const float labelFontSize = Style::fontSizeMini * m_contentScale;
-  const float pillHeight = std::round(kWorkspacePillDefaultHeight * m_contentScale * m_pillScale);
+  const float slotCross = m_isVertical ? m_lastContainerWidth : m_lastContainerHeight;
+  const float pillHeight =
+      std::max(1.0f, std::round(workspaceCapsuleCrossExtent(slotCross, m_barScale, m_contentScale) * m_pillScale));
   const FontWeight configuredFontWeight = labelFontWeight();
 
   std::vector<std::string> labels;
@@ -734,11 +745,9 @@ void WorkspacesWidget::rebuildGroupedApplications(Renderer& renderer) {
   }
 
   const float scale = m_contentScale;
-  float crossExtent = m_isVertical ? m_lastContainerWidth : m_lastContainerHeight;
-  if (crossExtent <= 1.0f) {
-    crossExtent = std::round((Style::barGlyphSize + Style::spaceMd) * scale);
-  }
-
+  const float slotCross = m_isVertical ? m_lastContainerWidth : m_lastContainerHeight;
+  const float crossExtent =
+      std::max(1.0f, std::round(workspaceCapsuleCrossExtent(slotCross, m_barScale, scale) * m_pillScale));
   const float baseItemSize = oddPx(crossExtent * 0.8f);
   const float iconSize = oddPx(baseItemSize * m_iconScale);
   const float iconGap = std::max(1.0f, std::round(kGroupedIconGap * scale));
@@ -759,11 +768,9 @@ void WorkspacesWidget::rebuildGroupedApplications(Renderer& renderer) {
     const bool hasWindows = !windows.empty();
     const float windowCount = std::max(1.0f, static_cast<float>(windows.size()));
     const float runMain = iconSize * windowCount + iconGap * std::max(0.0f, windowCount - 1.0f);
-    const float runCross = iconSize;
-    const float groupWidth = m_isVertical ? oddPx(runCross + (baseItemSize - iconSize + Style::spaceXs * scale))
-                                          : oddPx(runMain + Style::spaceLg * scale);
+    const float groupWidth = m_isVertical ? crossExtent : oddPx(runMain + Style::spaceLg * scale);
     const float groupHeight = m_isVertical ? oddPx(runMain + Style::spaceLg * scale)
-                                           : oddPx(runCross + (baseItemSize - iconSize + Style::spaceXs * scale));
+                                           : crossExtent;
     const float groupRadius = resolvedBarCapsuleRadius(groupWidth, groupHeight);
     const float outlineStroke = std::max(1.0f, std::round(Style::borderWidth * scale));
     const float outlineInset = std::max(1.0f, std::round(outlineStroke));

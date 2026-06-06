@@ -33,7 +33,7 @@ public:
       ColorSpec occupiedColor, ColorSpec emptyColor, std::size_t maxLabelChars, bool labelsOnlyWhenOccupied,
       bool hideWhenEmpty, float pillScale, bool minimal, bool showApplications, bool showApplicationsHover,
       bool colorizeIcons, float unfocusedIconsOpacity, float groupedBorderOpacity, bool enableScrollWheel,
-      float iconScale, bool showBadge
+      float iconScale, bool showBadge, float barScale
   );
   ~WorkspacesWidget() override;
 
@@ -131,6 +131,7 @@ private:
   bool m_labelsOnlyWhenOccupied = false;
   bool m_hideWhenEmpty = false;
   float m_pillScale = 1.0f;
+  float m_barScale = 1.0f;
   bool m_minimal = false;
   bool m_showApplications = false;
   bool m_showApplicationsHover = false;

@@ -118,7 +118,7 @@ WidgetFactory::~WidgetFactory() = default;
 
 std::unique_ptr<Widget> WidgetFactory::create(
     const std::string& name, wl_output* output, float contentScale, const std::string& barPosition,
-    const std::string& barName, float widgetSpacing
+    const std::string& barName, float widgetSpacing, float barScale
 ) const {
   // Resolve: if name matches a [widget.<name>] entry, use its type + settings.
   // Otherwise treat the name itself as the widget type with default settings.
@@ -596,7 +596,7 @@ std::unique_ptr<Widget> WidgetFactory::create(
     auto widget = std::make_unique<WorkspacesWidget>(
         m_platform, output, displayMode, focusedColor, occupiedColor, emptyColor, maxLabelChars, labelsOnlyWhenOccupied,
         hideWhenEmpty, pillScale, minimal, showApplications, showApplicationsHover, colorizeIcons,
-        unfocusedIconsOpacity, groupedBorderOpacity, enableScrollWheel, iconScale, showBadge
+        unfocusedIconsOpacity, groupedBorderOpacity, enableScrollWheel, iconScale, showBadge, barScale
     );
     widget->setContentScale(contentScale);
     return widget;

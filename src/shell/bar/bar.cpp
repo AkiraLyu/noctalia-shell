@@ -1501,7 +1501,7 @@ void Bar::populateWidgets(BarInstance& instance) {
     const float contentScale = resolveWidgetContentScale(instance.barConfig.scale, wcPtr, "widget." + name + ".scale");
     auto widget = m_widgetFactory->create(
         name, instance.output, contentScale, instance.barConfig.position, instance.barConfig.name,
-        static_cast<float>(instance.barConfig.widgetSpacing)
+        static_cast<float>(instance.barConfig.widgetSpacing), instance.barConfig.scale
     );
     if (widget == nullptr) {
       return;
